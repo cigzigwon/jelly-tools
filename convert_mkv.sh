@@ -88,3 +88,9 @@ for f in *.mkv; do
 	# move to Jellyfin media dir
 	mv -f "$outfile" "/media/chris/${TAG}"
 done
+
+rm -f "/media/chris/${TAG}/*sample*"
+
+if [ "$TAG" == shows ]; then
+    cd jellyfin_tools && ./mix.sh $TAG
+fi
