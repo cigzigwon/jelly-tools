@@ -23,6 +23,13 @@ defmodule JellyfinTools do
     File.ls!("/root/media/")
   end
 
+  def get_title(filename) do
+    String.split(filename, ~r/[S][0-9]{2}[E][0-9]{2}/)
+    |> Enum.fetch!(0)
+    |> String.replace(".", " ")
+    |> String.trim()
+  end
+
   def search_series(name) do
     url = "https://imdb-api.com/en/API/SearchSeries/#{@imdb_apikey}/#{name}"
       |> URI.encode()
