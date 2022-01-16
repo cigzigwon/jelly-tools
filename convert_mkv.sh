@@ -92,5 +92,5 @@ done
 rm -f "/media/chris/${TAG}/*sample*"
 
 if [ "$TAG" == shows ]; then
-    cd jellyfin_tools && ./mix.sh $TAG
+    cd ~/webdev/utils/jellyfin_tools && ./mix.sh $TAG
 fi

@@ -1,4 +1,7 @@
 defmodule JellyfinTools do
+
+  require Logger
+
   @imdb_apikey "k_q3758gy3"
   @shows_dir "/root/media/shows/"
 
@@ -19,7 +22,7 @@ defmodule JellyfinTools do
     :world
   end
 
-  def run() do
+  def shows() do
     list_shows()
     |> Enum.group_by(fn filename ->
       filename
@@ -27,16 +30,18 @@ defmodule JellyfinTools do
     end)
     |> Map.to_list()
     |> Enum.each(fn {title, filenames} ->
-      IO.puts(title)
+      Logger.info("[JellyfinTools] IMDB search expression: '#{title}'")
 
       title
-      |> search_series()
+      |> search()
       |> process_result(filenames)
 
       Process.sleep(150)
     end)
 
-    IO.puts("Done!!")
+    Logger.info("[JellyfinTools] organized shows complete!")
+
+    :ok
   end
 
   def process_result(nil, _) do
@@ -51,6 +56,7 @@ defmodule JellyfinTools do
 
     if not File.exists?(target) do
       File.mkdir!(target)
+      Logger.info("[JellyfinTools] created new directory in: #{target}")
     end
 
     filenames
@@ -69,15 +75,14 @@ defmodule JellyfinTools do
     |> String.trim()
   end
 
-  def search_series(name) do
+  def search(name) do
     url =
       "https://imdb-api.com/en/API/Search/#{@imdb_apikey}/#{name}"
       |> URI.encode()
 
     resp =
-      case HTTPoison.get(url) do
+      case HTTPoison.get(url, [], timeout: 20_000) do
         {:ok, resp} ->
-          IO.puts resp.body
           Poison.decode!(resp.body)
 
         {:error, %HTTPoison.Error{reason: reason}} ->

@@ -6,6 +6,6 @@ defmodule Mix.Tasks.Shows do
   def run(_) do
     Mix.Task.run("app.start")
     
-    JellyfinTools.run()
+    JellyfinTools.shows()
   end
 end
