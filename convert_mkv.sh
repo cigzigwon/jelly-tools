@@ -83,13 +83,14 @@ for f in *.mkv; do
 
 	sleep 4
 	rm -f "$f"
-	curl --insecure -T "$outfile" --user 'chris:$n00ker36' ftp://192.168.1.9
+    
+	# curl --insecure -T "$outfile" --user 'chris:$n00ker36' ftp://192.168.1.9
 
 	# move to Jellyfin media dir
 	mv -f "$outfile" "/media/chris/${TAG}"
 done
 
-rm -f "/media/chris/${TAG}/*sample*"
+rm -f /media/chris/$TAG/*sample*
 
 if [ "$TAG" == shows ]; then
     cd ~/webdev/utils/jellyfin_tools && ./mix.sh $TAG
