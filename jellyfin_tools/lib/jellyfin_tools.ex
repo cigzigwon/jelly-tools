@@ -81,7 +81,7 @@ defmodule JellyfinTools do
       |> URI.encode()
 
     resp =
-      case HTTPoison.get(url, [], timeout: 20_000) do
+      case HTTPoison.get(url, [], recv_timeout: 20_000) do
         {:ok, resp} ->
           Poison.decode!(resp.body)
 
