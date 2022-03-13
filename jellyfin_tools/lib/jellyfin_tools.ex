@@ -81,16 +81,19 @@ defmodule JellyfinTools do
       |> URI.encode()
 
     resp =
-      case HTTPoison.get(url, [], recv_timeout: 20_000) do
+      case HTTPoison.get(url, [], recv_timeout: 30_000) do
         {:ok, resp} ->
           Poison.decode!(resp.body)
 
         {:error, %HTTPoison.Error{reason: reason}} ->
           IO.inspect(reason)
+          %{"results" => []}
       end
 
     if resp["results"] |> length() > 0 do
       resp["results"] |> Enum.fetch!(0)
+    else
+      :noop
     end
   end
 end
