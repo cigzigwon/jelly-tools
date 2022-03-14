@@ -1,5 +1,4 @@
 defmodule JellyfinTools do
-
   require Logger
 
   @imdb_apikey "k_q3758gy3"
@@ -32,7 +31,7 @@ defmodule JellyfinTools do
       Logger.info("[JellyfinTools] IMDB search expression: '#{title}'")
 
       title
-      |> search()
+      |> search("SearchSeries")
       |> process_result(filenames, dir)
 
       Process.sleep(150)
@@ -59,7 +58,7 @@ defmodule JellyfinTools do
     end
 
     filenames
-    |> Enum.each(&(File.rename!(dir <> &1, target <> "/" <> &1)))
+    |> Enum.each(&File.rename!(dir <> &1, target <> "/" <> &1))
   end
 
   def list_shows(dir) do
@@ -74,9 +73,9 @@ defmodule JellyfinTools do
     |> String.trim()
   end
 
-  def search(name) do
+  def search(name, type) do
     url =
-      "https://imdb-api.com/en/API/Search/#{@imdb_apikey}/#{name}"
+      "https://imdb-api.com/en/API/#{type}/#{@imdb_apikey}/#{name}"
       |> URI.encode()
 
     resp =
@@ -90,7 +89,12 @@ defmodule JellyfinTools do
       end
 
     if resp["results"] |> length() > 0 do
-      resp["results"] |> Enum.fetch!(0)
+      resp["results"]
+      |> Enum.find(fn %{"title" => title} = _ ->
+        title
+        |> String.downcase()
+        |> String.contains?(name |> String.downcase() |> String.split(" "))
+      end)
     else
       :noop
     end

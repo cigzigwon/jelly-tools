@@ -5,7 +5,7 @@ defmodule Mix.Tasks.Shows do
   @shortdoc "Runs the fetcher for IMDB"
   def run(_) do
     Mix.Task.run("app.start")
-    
+
     JellyfinTools.shows("/root/media/shows/")
   end
 end
