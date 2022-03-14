@@ -1,4 +1,4 @@
-defmodule Mix.Tasks.Shows do
+defmodule Mix.Tasks.Kids do
   @moduledoc "The hello mix task: `mix help hello`"
   use Mix.Task
 
@@ -6,6 +6,6 @@ defmodule Mix.Tasks.Shows do
   def run(_) do
     Mix.Task.run("app.start")
     
-    JellyfinTools.shows("/root/media/shows/")
+    JellyfinTools.shows("/root/media/kids/")
   end
 end

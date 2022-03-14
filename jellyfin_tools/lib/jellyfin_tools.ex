@@ -3,7 +3,6 @@ defmodule JellyfinTools do
   require Logger
 
   @imdb_apikey "k_q3758gy3"
-  @shows_dir "/root/media/shows/"
 
   @moduledoc """
   Documentation for `JellyfinTools`.
@@ -22,8 +21,8 @@ defmodule JellyfinTools do
     :world
   end
 
-  def shows() do
-    list_shows()
+  def shows(dir) do
+    list_shows(dir)
     |> Enum.group_by(fn filename ->
       filename
       |> get_title()
@@ -34,7 +33,7 @@ defmodule JellyfinTools do
 
       title
       |> search()
-      |> process_result(filenames)
+      |> process_result(filenames, dir)
 
       Process.sleep(150)
     end)
@@ -44,15 +43,15 @@ defmodule JellyfinTools do
     :ok
   end
 
-  def process_result(nil, _) do
+  def process_result(nil, _, _) do
     :ok
   end
 
-  def process_result(res, filenames) do
+  def process_result(res, filenames, dir) do
     id = res["id"]
     desc = res["description"]
     title = res["title"]
-    target = @shows_dir <> "#{title} #{desc} [imdbid-#{id}]"
+    target = dir <> "#{title} #{desc} [imdbid-#{id}]"
 
     if not File.exists?(target) do
       File.mkdir!(target)
@@ -60,11 +59,11 @@ defmodule JellyfinTools do
     end
 
     filenames
-    |> Enum.each(&(File.rename!(@shows_dir <> &1, target <> "/" <> &1)))
+    |> Enum.each(&(File.rename!(dir <> &1, target <> "/" <> &1)))
   end
 
-  def list_shows() do
-    File.ls!(@shows_dir)
+  def list_shows(dir) do
+    File.ls!(dir)
     |> Enum.filter(&(&1 |> String.contains?(".mp4")))
   end
 
