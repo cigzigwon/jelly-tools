@@ -43,6 +43,8 @@ defmodule JellyfinTools do
   end
 
   def process_result(nil, _, _) do
+    Logger.info("[JellyfinTools] no results returned in search")
+
     :ok
   end
 
@@ -96,7 +98,7 @@ defmodule JellyfinTools do
         |> String.contains?(name |> String.downcase() |> String.split(" "))
       end)
     else
-      :noop
+      nil
     end
   end
 end
