@@ -92,6 +92,6 @@ done
 
 rm -f /media/chris/$TAG/*sample*
 
-if [ "$TAG" == shows ]; then
+if [ "$TAG" == shows ] || [ "$TAG" == kids ]; then
     cd ~/webdev/utils/jellyfin_tools && ./mix.sh $TAG
 fi
