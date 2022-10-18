@@ -69,7 +69,9 @@ defmodule JellyfinTools do
   end
 
   def get_title(filename) do
-    String.split(filename, ~r/[sS][0-9]{2}[eE][0-9]{2}/)
+    filename
+    |> String.replace(~r/(\d+)x(\d+)/, "S\\1E\\2")
+    |> String.split(~r/[sS]\d+[eE]\d+/)
     |> Enum.fetch!(0)
     |> String.replace(".", " ")
     |> String.trim()
@@ -90,15 +92,16 @@ defmodule JellyfinTools do
           %{"results" => []}
       end
 
-    if resp["results"] |> length() > 0 do
-      resp["results"]
-      |> Enum.find(fn %{"title" => title} = _ ->
-        title
-        |> String.downcase()
-        |> String.contains?(name |> String.downcase() |> String.split(" "))
-      end)
-    else
-      nil
+    case resp["results"] do
+      nil -> nil
+
+      results ->
+        results
+        |> Enum.find(fn %{"title" => title} = _ ->
+          title
+          |> String.downcase()
+          |> String.contains?(name |> String.downcase() |> String.split(" "))
+        end)
     end
   end
 end
