@@ -28,7 +28,9 @@ defmodule JellyfinTools do
     end)
     |> Map.to_list()
     |> Enum.each(fn {title, filenames} ->
-      Logger.info("[JellyfinTools] IMDB search expression: '#{title}'")
+      title = title |> String.downcase()
+
+      Logger.info("[#{__MODULE__}] IMDB search expression: '#{title}'")
 
       title
       |> search("SearchSeries")
@@ -37,13 +39,13 @@ defmodule JellyfinTools do
       Process.sleep(150)
     end)
 
-    Logger.info("[JellyfinTools] organized shows complete!")
+    Logger.info("[#{__MODULE__}] organized shows complete!")
 
     :ok
   end
 
   def process_result(nil, _, _) do
-    Logger.info("[JellyfinTools] no results returned in search")
+    Logger.info("[#{__MODULE__}] no results returned in search")
 
     :ok
   end
@@ -56,7 +58,7 @@ defmodule JellyfinTools do
 
     if not File.exists?(target) do
       File.mkdir!(target)
-      Logger.info("[JellyfinTools] created new directory in: #{target}")
+      Logger.info("[#{__MODULE__}] created new directory in: #{target}")
     end
 
     filenames
