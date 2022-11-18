@@ -81,7 +81,7 @@ defmodule JellyfinTools do
 
   def search(name, type) do
     url =
-      "https://imdb-api.com/en/API/#{type}/#{@imdb_apikey}/#{name}"
+      "https://imdb-api.com/en/API/#{type}/#{@imdb_apikey}/#{name |> URI.encode_www_form()}"
       |> URI.encode()
 
     resp =
@@ -100,9 +100,8 @@ defmodule JellyfinTools do
       results ->
         results
         |> Enum.find(fn %{"title" => title} = _ ->
-          title
-          |> String.downcase()
-          |> String.contains?(name |> String.downcase() |> String.split(" "))
+          IO.inspect title
+          String.downcase(title) == name
         end)
     end
   end
