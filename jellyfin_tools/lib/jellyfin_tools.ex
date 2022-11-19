@@ -22,7 +22,7 @@ defmodule JellyfinTools do
       |> search("SearchSeries")
       |> process_result(filenames, dir)
 
-      Process.sleep(150)
+      Stream.timer(300) |> Stream.run()
     end)
 
     Logger.info("[#{__MODULE__}] organized shows complete!")
