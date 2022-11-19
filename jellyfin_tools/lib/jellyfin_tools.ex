@@ -1,8 +1,6 @@
 defmodule JellyfinTools do
   require Logger
 
-  @imdb_apikey "k_q3758gy3"
-
   @moduledoc """
   Documentation for `JellyfinTools`.
   """
@@ -65,6 +63,7 @@ defmodule JellyfinTools do
     |> String.trim()
   end
 
+  @imdb_apikey "k_q3758gy3"
   def search(name, type) do
     url =
       "https://imdb-api.com/en/API/#{type}/#{@imdb_apikey}/#{name}"
