@@ -1,24 +1,9 @@
 defmodule JellyfinTools do
   require Logger
 
-  @imdb_apikey "k_q3758gy3"
-
   @moduledoc """
   Documentation for `JellyfinTools`.
   """
-
-  @doc """
-  Hello world.
-
-  ## Examples
-
-      iex> JellyfinTools.hello()
-      :world
-
-  """
-  def hello do
-    :world
-  end
 
   def shows(dir) do
     list_shows(dir)
@@ -28,15 +13,14 @@ defmodule JellyfinTools do
     end)
     |> Map.to_list()
     |> Enum.each(fn {title, filenames} ->
-      title = title |> String.downcase()
-
       Logger.info("[#{__MODULE__}] IMDB search expression: '#{title}'")
 
       title
+      |> String.downcase()
       |> search("SearchSeries")
       |> process_result(filenames, dir)
 
-      Process.sleep(150)
+      Stream.timer(300) |> Stream.run()
     end)
 
     Logger.info("[#{__MODULE__}] organized shows complete!")
@@ -52,9 +36,9 @@ defmodule JellyfinTools do
 
   def process_result(res, filenames, dir) do
     id = res["id"]
-    desc = res["description"]
     title = res["title"]
-    target = dir <> "#{title} #{desc} [imdbid-#{id}]"
+    year = res["description"] |> String.replace(~r/([0-9]{4})(.*)/, "\\1")
+    target = dir <> "#{title} (#{year}) [imdbid-#{id}]"
 
     if not File.exists?(target) do
       File.mkdir!(target)
@@ -79,6 +63,7 @@ defmodule JellyfinTools do
     |> String.trim()
   end
 
+  @imdb_apikey "k_q3758gy3"
   def search(name, type) do
     url =
       "https://imdb-api.com/en/API/#{type}/#{@imdb_apikey}/#{name}"
@@ -90,20 +75,17 @@ defmodule JellyfinTools do
           Poison.decode!(resp.body)
 
         {:error, %HTTPoison.Error{reason: reason}} ->
-          IO.inspect(reason)
+          Logger.error("[#{__MODULE__}] reason: #{inspect(reason)}")
           %{"results" => []}
       end
 
     case resp["results"] do
-      nil -> nil
+      nil ->
+        nil
 
       results ->
         results
-        |> Enum.find(fn %{"title" => title} = _ ->
-          title
-          |> String.downcase()
-          |> String.contains?(name |> String.downcase() |> String.split(" "))
-        end)
+        |> Enum.fetch!(0)
     end
   end
 end
