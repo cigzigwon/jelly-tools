@@ -79,13 +79,10 @@ defmodule JellyfinTools do
           %{"results" => []}
       end
 
-    case resp["results"] do
-      nil ->
-        nil
-
-      results ->
-        results
-        |> Enum.fetch!(0)
+    if resp["results"] |> length() > 0 do
+      resp["results"] |> Enum.fetch!(0)
+    else
+      nil
     end
   end
 end
