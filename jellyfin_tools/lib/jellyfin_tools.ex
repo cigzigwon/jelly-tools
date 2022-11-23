@@ -37,7 +37,7 @@ defmodule JellyfinTools do
   def process_result(res, filenames, dir) do
     id = res["id"]
     title = res["title"]
-    year = res["description"] |> String.replace(~r/([0-9]{4})(.*)/, "\\1")
+    year = res["description"] |> String.replace(~r/(.*)([0-9]{4})(.*)/, "\\2")
     target = dir <> "#{title} (#{year}) [imdbid-#{id}]"
 
     if not File.exists?(target) do
