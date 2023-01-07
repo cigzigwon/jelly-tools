@@ -37,7 +37,7 @@ defmodule JellyfinTools do
   def process_result(res, filenames, dir) do
     id = res["id"]
     title = res["title"]
-    year = res["description"] |> String.replace(~r/([0-9]{4})(.*)/, "\\1")
+    year = res["description"] |> String.replace(~r/(.*)([0-9]{4})(.*)/, "\\2")
     target = dir <> "#{title} (#{year}) [imdbid-#{id}]"
 
     if not File.exists?(target) do
@@ -79,13 +79,10 @@ defmodule JellyfinTools do
           %{"results" => []}
       end
 
-    case resp["results"] do
-      nil ->
-        nil
-
-      results ->
-        results
-        |> Enum.fetch!(0)
+    if resp["results"] |> length() > 0 do
+      resp["results"] |> Enum.fetch!(0)
+    else
+      nil
     end
   end
 end
