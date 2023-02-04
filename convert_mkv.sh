@@ -73,9 +73,9 @@ cd $DEST
 for f in *.mkv; do
 	outfile="${f%.mkv}.mp4"
 
-	if [[ $(grep -e '264' "$f" | wc -c) -gt 0 ]]; then
+	if [[ $(grep -a '264' "$f" | wc -c) -gt 0 ]]; then
 		HandBrakeCLI --preset "$FORMAT" -i "$f" -o "$outfile"
-	elif [[ $(grep -e '265' "$f" | wc -c) -gt 0 ]]; then
+	elif [[ $(grep -a '265' "$f" | wc -c) -gt 0 ]]; then
 		HandBrakeCLI --preset "$FORMAT" -i "$f" -o "$outfile"
 	else
 		ffmpeg -i "$f" -c copy "$outfile"
